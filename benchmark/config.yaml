@@ -1,0 +1,56 @@
+# Edit dataset paths to your actual locations.
+datasets:
+  - name: java_ds
+    path: data/java_ds
+  - name: py_ds
+    path: data/py_ds
+
+experiments:
+  # CodeT5 baselines
+  - name: codet5_java_only
+    algorithm: codet5
+    datasets: ["java_ds"]
+  - name: codet5_mixed
+    algorithm: codet5
+    datasets: ["java_ds", "py_ds"]
+
+  # Code2Seq example
+  - name: code2seq_mixed
+    algorithm: code2seq
+    datasets: ["java_ds", "py_ds"]
+    train_args:
+      d_model: 512
+      nhead: 8
+      num_layers: 3
+      src_vocab_size: 50000
+      tgt_vocab_size: 5000
+
+  # Code2Vec-like example
+  - name: code2vec_mixed
+    algorithm: code2vec
+    datasets: ["java_ds", "py_ds"]
+    train_args:
+      hidden_dim: 512
+      src_vocab_size: 50000
+      tgt_vocab_size: 5000
+
+# Default algorithm and hyperparams (can be overridden per experiment)
+algorithm: codet5
+
+model:
+  name: Salesforce/codet5-small
+
+train_args:
+  num_train_epochs: 3
+  per_device_train_batch_size: 8
+  per_device_eval_batch_size: 8
+  gradient_accumulation_steps: 2
+  learning_rate: 0.0003
+  weight_decay: 0.0
+  warmup_steps: 1000
+  max_source_length: 1024
+  max_target_length: 8
+  eval_top_k: 3
+  seed: 42
+
+output_root: runs
